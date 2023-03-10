@@ -55,6 +55,23 @@ for (iy in 1:1801) {
 SoAf_mask <- bf * !is.na(tp[,,1])
 num <- sum(SoAf_mask)
 
+lon <- data.frame(seq(0, 359.9, by = 0.1))
+lat <- data.frame(seq(90, -90, by = -0.1))  
+loc <- NULL
+k = 1
+for (iy in 1:1801) {
+  for (ix in 1:3600) {
+    if (SoAf_mask[ix, iy]==1) {
+      loc <- rbind(loc, cbind(lon[ix,],lat[iy,]))
+      k = k+1
+      }
+  }
+}
+
+colnames(loc) = c("lon","lat")
+write.csv(loc, paste0(diri,"SM_SoAf_location.csv"), quote=FALSE, 
+          row.names=FALSE)
+
 #-------------------------------------------------
 
 bf_tp  <- array(0, dim = c(num, 12))
@@ -66,7 +83,7 @@ bf_sm4 <- array(0, dim = c(num, 12))
 num_file = length(fili)
 # The file 2022 does not cover 12 months
 
-for (i in 1:num_file-1) {    
+for (i in 1:num_file) {    
   nc <- nc_open(paste0(diri, fili[i]))
   
   nc_lon  <- ncvar_get(nc, attributes(nc$dim)$names[1])
@@ -102,19 +119,24 @@ for (i in 1:num_file-1) {
   }
   
   firo <- paste0("SM_SoAf_tp_",substr(fili[i], 25, 28),".csv")
-  write.csv(bf_tp, paste0(diri,firo), quote=FALSE, row.names=FALSE)
+  write.csv(bf_tp, paste0(diri,firo), quote=FALSE, 
+            row.names=FALSE, col.names = FALSE)
   
   firo <- paste0("SM_SoAf_sm1_",substr(fili[i], 25, 28),".csv")
-  write.csv(bf_sm1, paste0(diri,firo), quote=FALSE, row.names=FALSE)
+  write.csv(bf_sm1, paste0(diri,firo), quote=FALSE, 
+            row.names=FALSE, col.names = FALSE)
   
   firo <- paste0("SM_SoAf_sm2_",substr(fili[i], 25, 28),".csv")
-  write.csv(bf_sm2, paste0(diri,firo), quote=FALSE, row.names=FALSE)
+  write.csv(bf_sm2, paste0(diri,firo), quote=FALSE, 
+            row.names=FALSE, col.names = FALSE)
   
   firo <- paste0("SM_SoAf_sm3_",substr(fili[i], 25, 28),".csv")
-  write.csv(bf_sm3, paste0(diri,firo), quote=FALSE, row.names=FALSE)
+  write.csv(bf_sm3, paste0(diri,firo), quote=FALSE, 
+            row.names=FALSE, col.names = FALSE)
   
   firo <- paste0("SM_SoAf_sm4_",substr(fili[i], 25, 28),".csv")
-  write.csv(bf_sm4, paste0(diri,firo), quote=FALSE, row.names=FALSE)
+  write.csv(bf_sm4, paste0(diri,firo), quote=FALSE, 
+            row.names=FALSE, col.names = FALSE)
   
   rm(nc, tp, swvl1, swvl2, swvl3, swvl4)
 }
